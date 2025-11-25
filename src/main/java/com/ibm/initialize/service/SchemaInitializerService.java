@@ -16,6 +16,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ibm.initialize.controller.StatusController;
 import com.ibm.initialize.utils.AppUtils;
@@ -37,12 +38,12 @@ public class SchemaInitializerService {
     private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(30);
     private static final Duration READ_TIMEOUT = Duration.ofMinutes(5);
 
-	public void initializeSchema(String url, String username, String password, String dataSource, String locale) {
+	public void initializeSchema(String url, String username, String password, String dataSource, String locale, MultipartFile model, MultipartFile data) {
 		long startTime = System.currentTimeMillis();
 		url = url + END_POINT ;
 		dataSource = (dataSource != null) ? dataSource : DEFAULT_DATA_SOURCE ;
 		locale = (locale != null) ? locale : DEFAULT_LOCALE ;
-    	if(getModelExtension(url, username, password, dataSource)) {
+    	if(getModelExtension(url, username, password, dataSource, model, data)) {
     		if(prepareSchemaScript(url, username, password, dataSource)) {
     			if(executeCreateSchema(url, username, password, dataSource)) {
     				int attempt  =1;
@@ -123,15 +124,15 @@ public class SchemaInitializerService {
 
    }
 	
-	public boolean getModelExtension(String url, String username, String password, String dataSource) {
+	public boolean getModelExtension(String url, String username, String password, String dataSource, MultipartFile model, MultipartFile data) {
 		
 		boolean isSuccess = false ;
-
+		
     	String apiUrl = (dataSource != null && !dataSource.isEmpty())
     ? url + "/modelextensionfiles?dataSource=" + dataSource : url + "/modelextensionfiles";
 
         Path outputDir   = Paths.get(DEFAULT_OUTPUT_DIR);
-        
+        if(null == model || null == data || model.isEmpty() || data.isEmpty()) {
         try {
             Files.createDirectories(outputDir);
 
@@ -189,6 +190,23 @@ public class SchemaInitializerService {
             e.printStackTrace();
            
         }
+		} else {
+			try {
+				Files.createDirectories(outputDir);
+				String zipFileName = "model-extension-files.zip";
+				Path tempZip = Files.createTempFile("model-extensions-", "-" + zipFileName);
+				Files.copy(model.getInputStream(), tempZip, StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(data.getInputStream(), tempZip, StandardCopyOption.REPLACE_EXISTING);
+				AppUtils.extractZip(tempZip, outputDir);
+				 Files.deleteIfExists(tempZip);
+				 StatusController.addStatus("✅ Copied model and data extension to: " + outputDir.toAbsolutePath());
+		            AppUtils.renameExtensionFiles(outputDir);
+		            isSuccess = true;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
         
         return isSuccess;
     }
