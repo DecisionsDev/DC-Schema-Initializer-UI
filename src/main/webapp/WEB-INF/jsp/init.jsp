@@ -71,6 +71,13 @@ width: 500px;
     font-size: 16px;
     margin-bottom: 20px;
 }
+
+.required:after {
+
+content: " *";
+color: red;
+font-size: 12px;
+}
       
     </style>
     <script>
@@ -113,16 +120,20 @@ const eventSource = new EventSource('/status-stream');
 <div class="container">
     <input type ="hidden" name="isSubmitted" id="isSubmitted">
     <c:if test="${empty isSubmitted}">
-    <form action="initialize" method="post"  id="initForm" onsubmit="handleSubmit()">
-        <label>URL:</label>
+    <form action="initialize" method="post"  id="initForm" enctype="multipart/form-data" onsubmit="handleSubmit()">
+        <label class="required">URL:</label>
         <input type="text" name="url" required="required" placeholder="http(s)://host:port" oninvalid="this.setCustomValidity('Valid url is mandatory')"
          oninput="this.setCustomValidity('')">
-        <label>Username:</label>
+        <label class="required">Username:</label>
         <input type="text" name="username" required="required" oninvalid="this.setCustomValidity('Valid username is mandatory')"
          oninput="this.setCustomValidity('')">
-        <label>Password:</label>
+        <label class="required">Password:</label>
         <input type="password" name="password" required="required" oninvalid="this.setCustomValidity('Valid Password is mandatory')"
          oninput="this.setCustomValidity('')">
+        <label>Extension model file&nbsp;:</label>
+        <input type="file" name="modelExtension"><br/><br/>
+        <label>Extension data file&nbsp;&nbsp;&nbsp;&nbsp;:</label>
+        <input type="file" name="dataExtension"><br/><br/>
         <label>Data Source:</label>
         <input type="text" name="dataSource" placeholder="datasource jndi name">
         <label>Locale:</label>
