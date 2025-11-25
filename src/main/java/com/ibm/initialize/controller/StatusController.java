@@ -42,7 +42,7 @@ public class StatusController {
             try {
                 emitter.send(SseEmitter.event().data(message));
             } catch (IOException e) {
-                emitter.complete();
+                emitter.completeWithError(e);
             }
         }
     }
