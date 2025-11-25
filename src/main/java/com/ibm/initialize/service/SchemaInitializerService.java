@@ -15,6 +15,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -193,10 +196,21 @@ public class SchemaInitializerService {
 		} else {
 			try {
 				Files.createDirectories(outputDir);
-				String zipFileName = "model-extension-files.zip";
-				Path tempZip = Files.createTempFile("model-extensions-", "-" + zipFileName);
-				Files.copy(model.getInputStream(), tempZip, StandardCopyOption.REPLACE_EXISTING);
-				Files.copy(data.getInputStream(), tempZip, StandardCopyOption.REPLACE_EXISTING);
+				Path tempZip = Files.createTempFile("model-extensions-", ".zip");
+				try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempZip))) {
+				    // Add model file
+				    zos.putNextEntry(new ZipEntry(model.getOriginalFilename())); // change name as needed
+				    try (InputStream in = model.getInputStream()) {
+				        in.transferTo(zos);
+				    }
+				    zos.closeEntry();
+				    // Add data file
+				    zos.putNextEntry(new ZipEntry(data.getOriginalFilename())); // change name as needed
+				    try (InputStream in = data.getInputStream()) {
+				        in.transferTo(zos);
+				    }
+				    zos.closeEntry();
+				}
 				AppUtils.extractZip(tempZip, outputDir);
 				 Files.deleteIfExists(tempZip);
 				 StatusController.addStatus("✅ Copied model and data extension to: " + outputDir.toAbsolutePath());
