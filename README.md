@@ -13,7 +13,7 @@ This is a source code with runnable jar which intialize ODM Decision center data
 
 ## Deployment and Run
  1. Import the project source code
- 2. Build the war file with maven 
+ 2. Build the war file with maven or Directly Download the war file from repository and use it.
  4. Deploy or Run the war file: java -jar DC-Schema-Initializer-UI-0.0.1-SNAPSHOT.war
  5. Application will run in the port 8080
 
