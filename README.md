@@ -17,7 +17,7 @@ This is a source code with runnable jar to initialize an ODM Decision center dat
  1. Build the war file with maven or Directly Download the war file DC-Schema-Initializer-UI.war from repository and use it.
  1. Deploy or Run the war file: java -jar DC-Schema-Initializer-UI.war
  1. Application will run in the port 8080
- 2. Access end point: http://host_name:8080/ or http://host_name:8080/initialize
+ 2. Access the app with end point: http://host_name:8080/ or http://host_name:8080/initialize
 
 # Issues and contributions
 For issues relating specifically to this repository, please use the [GitHub issue tracker](../../issues).
