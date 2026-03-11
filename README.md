@@ -3,9 +3,9 @@
 ## Features
 This is a source code with runnable jar to initialize an ODM Decision center database using the Decision center REST APIs.
 
-<img width="1455" height="935" alt="Screenshot 2026-03-11 at 5 55 12 PM" src="https://github.com/user-attachments/assets/8375cbfe-b1d4-4d71-8934-e50da76f2acd" />
+![home](src/images/home.png)
 
-<img width="1246" height="775" alt="Screenshot 2026-03-11 at 5 56 11 PM" src="https://github.com/user-attachments/assets/337ef15e-036a-4c04-8c98-4744f9c50827" />
+![result](src/images/result.png)
 
 
 ## Requirements
